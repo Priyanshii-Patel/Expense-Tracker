@@ -1,17 +1,15 @@
 const Income = require('../models/income');
-const Expense = require('../models/expense');
+const Expense = require('../models/Expense');
 
 const getDashboard = async (req, res) => {
     try {
 
         const user = req.user.id;
 
-        // ✅ NEW: get month & year from query
         const { month, year } = req.query;
 
         let dateFilter = {};
 
-        // ✅ NEW: apply filter only if month & year provided
         if (month && year) {
             const startDate = new Date(year, month - 1, 1);
             const endDate = new Date(year, month, 0);
@@ -21,7 +19,6 @@ const getDashboard = async (req, res) => {
             };
         }
 
-        // ✅ UPDATED: just added ...dateFilter (no other change)
         const income = await Income.find({ user, ...dateFilter });
         const totalIncome = income.reduce((acc, curr) => acc + curr.amount, 0);
 

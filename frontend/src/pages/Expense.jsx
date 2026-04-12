@@ -439,14 +439,15 @@ const expenseStyles = `
 `;
 
 const Expense = () => {
-  const [amount, setAmount]           = useState("");
-  const [category, setCategory]       = useState("");
+  const [amount, setAmount] = useState("");
+  const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
-  const [expense, setExpense]         = useState([]);
-  const [editId, setEditId]           = useState(null);
-  const [visible, setVisible]         = useState(false);
-  const [submitting, setSubmitting]   = useState(false);
-  const [deletingId, setDeletingId]   = useState(null);
+  const [date, setDate] = useState("");
+  const [expense, setExpense] = useState([]);
+  const [editId, setEditId] = useState(null);
+  const [visible, setVisible] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
 
   const fetchExpense = async () => {
     try {
@@ -463,16 +464,16 @@ const Expense = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!amount || !category || !description) return;
+    if (!amount || !category || !description || !date) return;
     setSubmitting(true);
     try {
       if (editId) {
-        await api.put(`/expense/${editId}`, { amount, category, description });
+        await api.put(`/expense/${editId}`, { amount, category, description, date });
         setEditId(null);
       } else {
-        await api.post("/expense", { amount, category, description });
+        await api.post("/expense", { amount, category, description, date });
       }
-      setAmount(""); setCategory(""); setDescription("");
+      setAmount(""); setCategory(""); setDescription(""); setDate("");
       fetchExpense();
     } catch (err) {
       console.log(err.message);
@@ -497,13 +498,14 @@ const Expense = () => {
     setAmount(item.amount);
     setCategory(item.category);
     setDescription(item.description);
+    setDate(item.date ? item.date.split("T")[0] : "")
     setEditId(item._id);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleCancel = () => {
     setEditId(null);
-    setAmount(""); setCategory(""); setDescription("");
+    setAmount(""); setCategory(""); setDescription(""); setDate("");
   };
 
   const total = expense.reduce((sum, i) => sum + Number(i.amount), 0);
@@ -579,6 +581,16 @@ const Expense = () => {
                   placeholder="e.g. Weekly groceries"
                   value={description}
                   onChange={e => setDescription(e.target.value)}
+                />
+              </div>
+
+              <div className="ex-field">
+                <label className="ex-label">Date</label>
+                <input
+                  type="date"
+                  className="ex-input"
+                  value={date}
+                  onChange={e => setDate(e.target.value)}
                 />
               </div>
 

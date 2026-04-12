@@ -1,8 +1,7 @@
 const Budget = require("../models/Budget");
-const Expense = require("../models/expense");
+const Expense = require("../models/Expense");
 
 
-// ✅ CREATE BUDGET
 const setBudget = async (req, res) => {
   try {
     const { month, year, limitAmount } = req.body;
@@ -39,9 +38,8 @@ const setBudget = async (req, res) => {
 };
 
 
-// ✅ GET BUDGET
 const getBudget = async (req, res) => {
-  try {
+  try { 
     const { month, year } = req.query;
     const user = req.user.id;
 
@@ -68,7 +66,6 @@ const getBudget = async (req, res) => {
 };
 
 
-// ✅ UPDATE BUDGET (SEPARATE)
 const updateBudget = async (req, res) => {
   try {
     const { id } = req.params;
@@ -102,7 +99,6 @@ const updateBudget = async (req, res) => {
 };
 
 
-// ✅ DELETE BUDGET
 const deleteBudget = async (req, res) => {
   try {
     const { id } = req.params;
@@ -123,7 +119,6 @@ const deleteBudget = async (req, res) => {
 };
 
 
-// ✅ BUDGET STATUS (VERY IMPORTANT 🔥)
 const getBudgetStatus = async (req, res) => {
   try {
     const { month, year } = req.query;

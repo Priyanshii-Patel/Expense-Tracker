@@ -418,14 +418,15 @@ const incomeStyles = `
 `;
 
 const Income = () => {
-  const [amount, setAmount]             = useState("");
-  const [source, setSource]             = useState("");
-  const [income, setIncome]             = useState([]);
-  const [editId, setEditId]             = useState(null);
-  const [loading, setLoading]           = useState(false);
-  const [fetching, setFetching]         = useState(true);
+  const [amount, setAmount] = useState("");
+  const [source, setSource] = useState("");
+  const [date, setDate] = useState("");
+  const [income, setIncome] = useState([]);
+  const [editId, setEditId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
-  const [visible, setVisible]           = useState(false);
+  const [visible, setVisible] = useState(false);
 
   const fetchIncome = async () => {
     setFetching(true);
@@ -451,19 +452,19 @@ const Income = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!amount || !source) { toast.error("Please fill in all fields"); return; }
+    if (!amount || !source || !date) { toast.error("Please fill in all fields"); return; }
     if (Number(amount) <= 0) { toast.error("Amount must be greater than 0"); return; }
     setLoading(true);
     try {
       if (editId) {
-        await api.put(`/income/${editId}`, { amount, source });
+        await api.put(`/income/${editId}`, { amount, source, date });
         toast.success("Income updated");
         setEditId(null);
       } else {
-        await api.post("/income", { amount, source });
+        await api.post("/income", { amount, source, date });
         toast.success("Income added");
       }
-      setAmount(""); setSource("");
+      setAmount(""); setSource(""); setDate("");
       fetchIncome();
     } catch (err) {
       toast.error(err.response?.data?.msg || "Something went wrong");
@@ -484,11 +485,11 @@ const Income = () => {
   };
 
   const handleEdit = (item) => {
-    setAmount(item.amount); setSource(item.source); setEditId(item._id);
+    setAmount(item.amount); setSource(item.source); setDate(item.date ? item.date.split("T")[0] : ""); setEditId(item._id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleCancel = () => { setEditId(null); setAmount(""); setSource(""); };
+  const handleCancel = () => { setEditId(null); setAmount(""); setSource(""); setDate("") };
 
   const totalIncome = income.reduce((sum, item) => sum + Number(item.amount), 0);
 
@@ -527,6 +528,15 @@ const Income = () => {
                 <label className="in-label">Source</label>
                 <input type="text" className="in-input" placeholder="Salary / Freelance"
                   value={source} onChange={e => setSource(e.target.value)} />
+              </div>
+              <div className="in-field">
+                <label className="in-label">Date</label>
+                <input
+                  type="date"
+                  className="in-input"
+                  value={date}
+                  onChange={e => setDate(e.target.value)}
+                />
               </div>
               <div className="in-form-actions">
                 <button type="submit" className="in-submit" disabled={loading || !amount || !source}>
