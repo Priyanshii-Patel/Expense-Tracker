@@ -164,10 +164,6 @@ const getBudgetStatus = async (req, res) => {
 };
 
 
-module.exports = {
-  setBudget,
-  getBudget,
-  updateBudget,
-  deleteBudget,
-  getBudgetStatus,
-};
+module.exports = { setBudget, getBudget, updateBudget, deleteBudget, getBudgetStatus };
+
+//Updated by Priynashi
