@@ -21,6 +21,10 @@ app.use('/api/expense', expenseRouter);
 app.use('/api/budget', budgetRouter);
 app.use('/api/dashboard', dashboardRouter);
 
+app.get("/", (req,res) => {
+    res.send("Service is up and running");
+})
+
 const startServer = async () => {
     await connectDB();
 
