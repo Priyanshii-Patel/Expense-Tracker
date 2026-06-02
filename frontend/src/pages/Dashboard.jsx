@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import api from "../services/api";
 import {
   Chart as ChartJS,
@@ -9,6 +9,8 @@ import {
   Legend
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { AuthContext } from '../context/AuthContext';
+
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -347,6 +349,8 @@ const Dashboard = () => {
   const [balance, setBalance] = useState(0);
   const [loading, setLoading] = useState(true);
 
+  const { token } = useContext(AuthContext);
+
   // ✅ NEW: month & year state
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [year, setYear] = useState(new Date().getFullYear());
@@ -369,8 +373,10 @@ const Dashboard = () => {
 
   // ✅ UPDATED: refetch when month/year changes
   useEffect(() => {
-    fetchDashboard();
-  }, [month, year]);
+    if (token) {
+        fetchDashboard();
+    }
+  }, [token, month, year]);
 
   const chartData = {
     labels: ["Income", "Expense"],

@@ -435,6 +435,7 @@ const ResetPassword = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Handle submit worked.....")
     if (password.length < 8) { toast.error('Password must be at least 8 characters'); return; }
     if (password !== confirmPassword) { toast.error('Passwords do not match'); return; }
     setLoading(true);

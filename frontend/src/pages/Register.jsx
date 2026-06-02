@@ -380,6 +380,7 @@ const Register = () => {
         email: formData.email.toLowerCase(),
         password: formData.password
       });
+      console.log("REGISTER RESPONSE", res.data);
       if (res?.data?.success) {
         login(res.data.token, res.data.user);
         toast.success("Registration Successful");

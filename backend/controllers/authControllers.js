@@ -20,8 +20,14 @@ const register = async (req, res) => {
             role: role || "user",
         })
 
+
+        //console.log("user from reg",user);
+        const token = user.generateToken();
+        //console.log("Register of Token ",token)
+
         res.status(201).json({
             success: true,
+            token,
             user
         })
 
@@ -91,6 +97,7 @@ const forgetPassword = async (req,res)=>{
   }
 
   const resetToken = user.getResetPasswordToken();
+  console.log("Reset Token from Forget Password",resetToken);
 
   
   await user.save({validateBefore:false});
