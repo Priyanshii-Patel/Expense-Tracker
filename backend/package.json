@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start":"app.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev":"nodemon app.js"
+    "start": "node app.js",
+    "clean": "node -e \"require('fs').rmSync('dist', { recursive: true, force: true });\"",
+    "build": "npm run clean && node -e \"const fs=require('fs'); const path=require('path'); const dirs=['config','controllers','middlewares','models','routes','utils']; fs.mkdirSync('dist',{recursive:true}); fs.copyFileSync('app.js',path.join('dist','app.js')); for (const dir of dirs) fs.cpSync(dir,path.join('dist',dir),{recursive:true}); console.log('Build completed: app and backend folders copied to dist');\"",
+    "start:prod": "node dist/app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
