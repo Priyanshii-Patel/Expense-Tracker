@@ -87,31 +87,33 @@ const getUser = async (req, res) => {
 
 
 const forgetPassword = async (req,res)=>{
-  const {email} = req.body;
-  const user = await User.findOne({email});
-  if(!user){
-    return res.status(404).json({
-      success:false,
-      msg : "Not an user try register",
-    })
-  }
-
-  const resetToken = user.getResetPasswordToken();
-  console.log("Reset Token from Forget Password",resetToken);
-
-  
-  await user.save({validateBefore:false});
-
-
-  //For testing with postman
-  // const resetUrl = `http://localhost:3000/api/auth/resetpassword/${resetToken}`;
-
-  //COnnecting with React
-  const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
-
-  const message = `This email is reference to change your password ${resetUrl}`;
+  let user;
 
   try {
+    const {email} = req.body;
+    user = await User.findOne({email});
+    if(!user){
+      return res.status(404).json({
+        success:false,
+        msg : "Not an user try register",
+      })
+    }
+
+    const resetToken = user.getResetPasswordToken();
+    console.log("Reset Token from Forget Password",resetToken);
+
+  
+    await user.save({validateBefore:false});
+
+
+    //For testing with postman
+    // const resetUrl = `http://localhost:3000/api/auth/resetpassword/${resetToken}`;
+
+    //COnnecting with React
+    const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+
+    const message = `This email is reference to change your password ${resetUrl}`;
+
     await sendEmail({
       email: user.email,
       subject : 'This is Password Reset Token',
@@ -125,8 +127,15 @@ const forgetPassword = async (req,res)=>{
 
   } catch (error) {
     console.log(error.message);
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
+    if (user) {
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpire = undefined;
+      await user.save({ validateBefore: false });
+    }
+    res.status(500).json({
+      success: false,
+      msg: error.message,
+    })
   }
 }
 
@@ -163,6 +172,10 @@ const resetPassword = async(req,res)=>{
 
   } catch (error) {
     console.log(error.message);
+    res.status(500).json({
+      success: false,
+      msg: error.message,
+    })
   }
 }
 

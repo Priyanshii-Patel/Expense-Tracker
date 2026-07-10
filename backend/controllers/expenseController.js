@@ -58,7 +58,10 @@ const getExpense = async (req, res) => {
 const deleteExpense = async (req, res) => {
     try {
 
-        const expense = await Expense.findByIdAndDelete(req.params.id);
+        const expense = await Expense.findOneAndDelete({
+            _id: req.params.id,
+            user: req.user.id,
+        });
 
         if (!expense) {
             return res.status(404).json({
@@ -87,8 +90,8 @@ const updateExpense = async (req, res) => {
         const { id } = req.params;
         const { amount, category, description, date } = req.body;
 
-        const expense = await Expense.findByIdAndUpdate(
-            id,
+        const expense = await Expense.findOneAndUpdate(
+            { _id: id, user: req.user.id },
             { amount, category, description, date },
             { new: true }
         );

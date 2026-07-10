@@ -71,8 +71,8 @@ const updateBudget = async (req, res) => {
     const { id } = req.params;
     const { limitAmount } = req.body;
 
-    const budget = await Budget.findByIdAndUpdate(
-      id,
+    const budget = await Budget.findOneAndUpdate(
+      { _id: id, user: req.user.id },
       { limitAmount },
       { new: true }
     );
@@ -103,7 +103,17 @@ const deleteBudget = async (req, res) => {
   try {
     const { id } = req.params;
 
-    await Budget.findByIdAndDelete(id);
+    const budget = await Budget.findOneAndDelete({
+      _id: id,
+      user: req.user.id,
+    });
+
+    if (!budget) {
+      return res.status(404).json({
+        success: false,
+        message: "Budget not found",
+      });
+    }
 
     res.status(200).json({
       success: true,

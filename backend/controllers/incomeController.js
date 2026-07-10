@@ -55,7 +55,10 @@ const getIncome = async (req, res) => {
 const deleteIncome = async (req, res) => {
     try {
 
-        const income = await Income.findById(req.params.id);
+        const income = await Income.findOne({
+            _id: req.params.id,
+            user: req.user._id,
+        });
 
         if (!income) {
             return res.status(404).json({
@@ -64,7 +67,7 @@ const deleteIncome = async (req, res) => {
             })
         }
 
-        await Income.findByIdAndDelete(req.params.id);
+        await Income.findByIdAndDelete(income._id);
 
         res.status(200).json({
             success: true,
@@ -72,7 +75,7 @@ const deleteIncome = async (req, res) => {
         })
     } catch (error) {
         res.status(500).json({
-            success: true,
+            success: false,
             msg: error.message,
         })
     }
@@ -84,7 +87,8 @@ const updateIncome = async(req,res) => {
         const { id } = req.params;
         const { amount, source, date } = req.body
 
-        const income = await Income.findByIdAndUpdate( id, 
+        const income = await Income.findOneAndUpdate(
+            { _id: id, user: req.user._id },
             { amount, source, date},
             { new : true }
         );
